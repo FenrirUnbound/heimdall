@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "hapi": "^8.4.0",
+    "items": "^1.1.0",
+    "node-env-file": "^0.1.7",
     "q": "^1.2.0"
   }
 }
