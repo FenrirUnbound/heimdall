@@ -55,7 +55,7 @@ describe('Server', function describeServer() {
       });
     });
 
-    it('should get the current number of games', function testGameSave(done) {
+    it('should get the current number of games', function testGameCount(done) {
       server.inject({
         method: 'GET',
         url: '/api/games/totoro'
@@ -66,6 +66,18 @@ describe('Server', function describeServer() {
         expect(data).to.have.property('count')
           .that.is.at.least(0);
         done();
+      });
+    });
+
+    describe('Failures', function describeGameFailures() {
+      it('should miss if requesting a non-existent game', function failMissingGame(done) {
+        server.inject({
+          method: 'GET',
+          url: '/api/games/fakeGame'
+        }, function verify(response) {
+          expect(response.statusCode).to.equal(404);
+          done();
+        });
       });
     });
   });
