@@ -1,7 +1,13 @@
+var env = require('node-env-file');
 var expect = require('chai').expect;
+var path = require('path');
 
 describe('Server', function describeServer() {
   var server;
+
+  before(function onceBefore() {
+    env(path.resolve(__dirname, '..', '.env'), {raise:false});
+  });
 
   beforeEach(function beforeAll(done) {
     var me = require('../lib/server');
@@ -45,6 +51,20 @@ describe('Server', function describeServer() {
         expect(data).to.deep.equal([
           'totoro'
         ]);
+        done();
+      });
+    });
+
+    it('should get the current number of games', function testGameSave(done) {
+      server.inject({
+        method: 'GET',
+        url: '/api/games/totoro'
+      }, function verify(response) {
+        var data;
+        expect(response.statusCode).to.deep.equal(200);
+        data = JSON.parse(response.payload);
+        expect(data).to.have.property('count')
+          .that.is.at.least(0);
         done();
       });
     });
