@@ -6,7 +6,7 @@ describe('Server', function describeServer() {
   var server;
 
   before(function onceBefore() {
-    env(path.resolve(__dirname, '..', '.env'));
+    env(path.resolve(__dirname, '..', '.env'), {raise:false});
   });
 
   beforeEach(function beforeAll(done) {
