@@ -70,9 +70,9 @@ describe('Server', function describeServer() {
       });
     });
 
-    it('should reserve a game session', function testGameReserve(done) {
-      async.series({
-        before: function initialCount(next) {
+    it('saves data for a reserved game', function testGameSave(done) {
+      async.series([
+        function initialCount(next) {
           server.inject({
             method: 'GET',
             url: '/api/games/totoro'
@@ -81,7 +81,7 @@ describe('Server', function describeServer() {
             next(null, data.count);
           });
         },
-        after: function reserveGame(next) {
+        function reserveGame(next) {
           server.inject({
             method: 'POST',
             url: '/api/games/totoro'
@@ -90,10 +90,43 @@ describe('Server', function describeServer() {
             next(null, data.gameId);
           });
         }
-      }, function verify(error, data) {
+      ], function verify(error, data) {
+        var testData;
         expect(error).to.not.be.ok;
-        expect(data.before).to.be.lessThan(data.after);
-        done();
+        expect(data[0]).to.be.lessThan(data[1]);
+
+        testData = {'test': 123, 'data': '456'};
+        async.series([
+          function saveGameData(next) {
+            server.inject({
+              method: 'PUT',
+              payload: JSON.stringify(testData),
+              url: '/api/games/totoro/' + data[1]
+            }, function saveGameResult(response) {
+              var result;
+              expect(response.statusCode).to.deep.equal(200);
+              result = JSON.parse(response.payload);
+              expect(result).to.deep.equal(testData);
+              next(null, result);
+            });
+          },
+          function fetchGameData(next) {
+            server.inject({
+              method: 'GET',
+              url: '/api/games/totoro/' + data[1]
+            }, function gameDataResult(response) {
+              var result;
+              expect(response.statusCode).to.deep.equal(200);
+              result = JSON.parse(response.payload);
+              next(null, result);
+            });
+          }
+        ], function validate(lastError, result) {
+          expect(lastError).to.not.be.ok;
+          expect(result[0]).to.deep.equal(testData);
+          expect(result[1]).to.deep.equal(testData);
+          done();
+        });
       });
     });
 
