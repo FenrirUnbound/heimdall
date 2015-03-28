@@ -88,11 +88,10 @@ describe('Server', function describeServer() {
           });
         },
         function reserveGame(next) {
-          // TODO: change 200 -> 201
           sendRequest({
             method: 'POST',
             url: '/api/games/totoro'
-          }, 200).then(function completed(data) {
+          }, 201).then(function completed(data) {
             next(null, data.gameId);
           });
         }
