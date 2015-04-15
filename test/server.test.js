@@ -60,6 +60,7 @@ describe('Server', function describeServer() {
         url: '/api/games'
       }, 200).then(function verify(data) {
         expect(data).to.deep.equal([
+          'dice_town',
           'mc',
           'totoro'
         ]);
