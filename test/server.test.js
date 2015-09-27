@@ -60,12 +60,13 @@ describe('Server', function describeServer() {
         url: '/api/games'
       }, 200).then(function verify(data) {
         expect(data).to.deep.equal([
+          'dice_battle',
           'dice_town',
           'mc',
           'totoro'
         ]);
-        done();
-      });
+      })
+      .done(done);
     });
 
     it('should get the current number of games', function testGameCount(done) {
@@ -75,8 +76,8 @@ describe('Server', function describeServer() {
       }, 200).then(function verify(data) {
         expect(data).to.have.property('count')
           .that.is.at.least(0);
-          done();
-      });
+      })
+      .done(done);
     });
 
     it('saves data for a reserved game', function testGameSave(done) {
